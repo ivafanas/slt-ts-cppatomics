@@ -73,7 +73,7 @@ int main(int argc, const char **argv) {
 
   int arr_size = 1024;
   int n_threads = 4;
-  int count = 1024;
+  int count = 5000;
   if (!get_arg_pos_i(argc, argv, "--array_size", &arr_size) ||
       !get_arg_pos_i(argc, argv, "--num_threads", &n_threads) ||
       !get_arg_pos_i(argc, argv, "--count", &count))

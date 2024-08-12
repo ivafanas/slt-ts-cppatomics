@@ -38,7 +38,7 @@ function(add_slt_ts_exe TEST_NAME)
 
 	add_dependencies(${TEST_NAME} slt_ts_utils_lib)
 
-	target_link_libraries(${TEST_NAME} slt_ts_utils_lib)
+	target_link_libraries(${TEST_NAME} slt_ts_utils_lib atomic)
 
 	install(
 		TARGETS ${TEST_NAME}
@@ -55,6 +55,7 @@ function(add_slt_ts_exe TEST_NAME)
 		COMMAND ./${TEST_NAME})
 endfunction()
 
+add_slt_ts_exe(memory_order_seq_cst)
 add_slt_ts_exe(memory_order_relaxed_arr_max)
 add_slt_ts_exe(memory_order_relaxed_arr_sum)
 add_slt_ts_exe(memory_order_relaxed_inc_counter)

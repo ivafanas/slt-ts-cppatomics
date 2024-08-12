@@ -60,7 +60,7 @@ int main(int argc, const char **argv) {
     return 0;
   }
 
-  int count = 50000;
+  int count = 1000000;
   int n_threads = 4;
   if (!get_arg_pos_i(argc, argv, "--count", &count) ||
       !get_arg_pos_i(argc, argv, "--num_threads", &n_threads))

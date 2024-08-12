@@ -73,7 +73,7 @@ int main(int argc, const char **argv) {
     return 0;
   }
 
-  int arr_size = 512 * 1024;
+  int arr_size = 4 * 1024 * 1024;
   int n_threads = 4;
   if (!get_arg_pos_i(argc, argv, "--array_size", &arr_size) ||
       !get_arg_pos_i(argc, argv, "--num_threads", &n_threads))

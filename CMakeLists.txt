@@ -40,6 +40,14 @@ function(add_slt_ts_exe TEST_NAME)
 
 	target_link_libraries(${TEST_NAME} slt_ts_utils_lib)
 
+	install(
+		TARGETS ${TEST_NAME}
+		EXPORT  ${CMAKE_PROJECT_NAME}
+		LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR}
+	)
+
 	add_dependencies(run ${TEST_NAME})
 
 	add_custom_command(

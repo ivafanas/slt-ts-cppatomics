@@ -1,8 +1,34 @@
+#include "utils.h"
+
 #include "slt_ts.h"
 
+#include <chrono>
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+
+static std::uint64_t get_current_time_ms() {
+  using namespace std::chrono;
+  auto dur = high_resolution_clock::now().time_since_epoch();
+  return duration_cast<milliseconds>(dur).count();
+}
+
+static std::uint64_t get_env_u64(const char *key) {
+  const char *value = std::getenv(key);
+  return value ? std::atoll(value) : 0;
+}
+
+static std::uint64_t get_min_testing_time_ms() {
+  if (std::uint64_t value = get_env_u64("SLT_TS_CPPATOMICS_MIN_TEST_TIME_SEC"))
+    return value * 1000ULL;
+  if (std::uint64_t value = get_env_u64("SLT_TS_CPPATOMICS_MIN_TEST_TIME_MS"))
+    return value;
+  if (std::uint64_t value = get_env_u64("SLT_TS_MIN_TEST_TIME_SEC"))
+    return value * 1000ULL;
+  if (std::uint64_t value = get_env_u64("SLT_TS_MIN_TEST_TIME_MS"))
+    return value;
+  return 1000; // Default min testing time: 1 sec per test.
+}
 
 namespace sltts {
 
@@ -28,7 +54,7 @@ void log_status_param(const char *name, std::uint8_t value, int indent) {
   std::cout << name << ": " << static_cast<int>(value) << '\n';
 }
 
-int get_arg_i(int argc, const char **argv, const char *name, int *result) {
+bool get_arg_i(int argc, const char **argv, const char *name, int *result) {
   for (int i = 1; i + 1 < argc; ++i) {
     if (strcmp(name, argv[i]))
       continue;
@@ -64,6 +90,14 @@ bool get_arg_pos_i(int argc, const char **argv, const char *name, int *result) {
   }
 
   return true;
+}
+
+RepeatTestTimer::RepeatTestTimer()
+    : start_time_ms(get_current_time_ms()),
+      min_testing_time_ms(get_min_testing_time_ms()) {}
+
+bool RepeatTestTimer::should_continue() const {
+  return start_time_ms + min_testing_time_ms >= get_current_time_ms();
 }
 
 } // namespace sltts

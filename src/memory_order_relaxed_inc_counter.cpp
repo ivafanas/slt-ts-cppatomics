@@ -60,7 +60,7 @@ int main(int argc, const char **argv) {
     return 0;
   }
 
-  int count = 1000000;
+  int count = 10000;
   int n_threads = 4;
   if (!get_arg_pos_i(argc, argv, "--count", &count) ||
       !get_arg_pos_i(argc, argv, "--num_threads", &n_threads))
@@ -71,10 +71,13 @@ int main(int argc, const char **argv) {
   log_status_param("num threads", n_threads, 2);
 
   bool succeed = true;
-  succeed &= test<std::uint8_t>(count, n_threads);
-  succeed &= test<std::uint16_t>(count, n_threads);
-  succeed &= test<std::uint32_t>(count, n_threads);
-  succeed &= test<std::uint64_t>(count, n_threads);
+  repeat_test([&]() {
+    succeed &= test<std::uint8_t>(count, n_threads);
+    succeed &= test<std::uint16_t>(count, n_threads);
+    succeed &= test<std::uint32_t>(count, n_threads);
+    succeed &= test<std::uint64_t>(count, n_threads);
+    return succeed;
+  });
 
   std::puts(succeed ? "passed" : "failed");
   return succeed ? 0 : 1;

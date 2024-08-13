@@ -29,6 +29,23 @@ bool get_arg_i(int argc, const char **argv, const char *name, int *result);
 /// but value is not a positive integer.
 bool get_arg_pos_i(int argc, const char **argv, const char *name, int *result);
 
+class RepeatTestTimer {
+public:
+  RepeatTestTimer();
+
+  bool should_continue() const;
+
+private:
+  std::uint64_t start_time_ms;
+  std::uint64_t min_testing_time_ms;
+};
+
+template<typename FuncT> void repeat_test(FuncT &&func) {
+  RepeatTestTimer timer;
+  while(func() && timer.should_continue())
+    ;
+}
+
 } // namespace sltts
 
 #endif // SLT_TS_CPPATOMICS_UTILS_H

@@ -73,7 +73,7 @@ int main(int argc, const char **argv) {
     return 0;
   }
 
-  int arr_size = 4 * 1024 * 1024;
+  int arr_size = 512 * 1024;
   int n_threads = 4;
   if (!get_arg_pos_i(argc, argv, "--array_size", &arr_size) ||
       !get_arg_pos_i(argc, argv, "--num_threads", &n_threads))
@@ -86,10 +86,13 @@ int main(int argc, const char **argv) {
   log_status_param("num threads", n_threads, 2);
 
   bool succeed = true;
-  succeed &= test<std::uint8_t>(arr_size, n_threads);
-  succeed &= test<std::uint16_t>(arr_size, n_threads);
-  succeed &= test<std::uint32_t>(arr_size, n_threads);
-  succeed &= test<std::uint64_t>(arr_size, n_threads);
+  repeat_test([&]() {
+    succeed &= test<std::uint8_t>(arr_size, n_threads);
+    succeed &= test<std::uint16_t>(arr_size, n_threads);
+    succeed &= test<std::uint32_t>(arr_size, n_threads);
+    succeed &= test<std::uint64_t>(arr_size, n_threads);
+    return succeed;
+  });
 
   std::puts(succeed ? "passed" : "failed");
   return succeed ? 0 : 1;

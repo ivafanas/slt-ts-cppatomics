@@ -25,7 +25,8 @@ T parallel_sum(const std::vector<T> &v, int n_thr, int count) {
       const int start_ix = t * bucket_size;
       const int final_ix = t + 1 == n_thr ? v.size() : start_ix + bucket_size;
 
-      while (fence.load(std::memory_order_relaxed));
+      while (fence.load(std::memory_order_relaxed))
+        ;
 
       for (int i = start_ix; i < final_ix; ++i) {
         for (int it = 0; it < count; ++it)
@@ -65,15 +66,14 @@ template <typename T> bool test(const int n, int n_thr, int count) {
 
 int main(int argc, const char **argv) {
   if (argc == 2 && !strcmp(argv[1], "-h")) {
-    std::printf(
-        "Usage: %s [--array_size v1] [--num_threads v2] [--count v3]\n",
-        argv[0]);
+    std::printf("Usage: %s [--array_size v1] [--num_threads v2] [--count v3]\n",
+                argv[0]);
     return 0;
   }
 
   int arr_size = 1024;
   int n_threads = 4;
-  int count = 5000;
+  int count = 1000;
   if (!get_arg_pos_i(argc, argv, "--array_size", &arr_size) ||
       !get_arg_pos_i(argc, argv, "--num_threads", &n_threads) ||
       !get_arg_pos_i(argc, argv, "--count", &count))
@@ -87,10 +87,13 @@ int main(int argc, const char **argv) {
   log_status_param("count", count, 2);
 
   bool succeed = true;
-  succeed &= test<std::uint8_t>(arr_size, n_threads, count);
-  succeed &= test<std::uint16_t>(arr_size, n_threads, count);
-  succeed &= test<std::uint32_t>(arr_size, n_threads, count);
-  succeed &= test<std::uint64_t>(arr_size, n_threads, count);
+  repeat_test([&]() {
+    succeed &= test<std::uint8_t>(arr_size, n_threads, count);
+    succeed &= test<std::uint16_t>(arr_size, n_threads, count);
+    succeed &= test<std::uint32_t>(arr_size, n_threads, count);
+    succeed &= test<std::uint64_t>(arr_size, n_threads, count);
+    return succeed;
+  });
 
   std::puts(succeed ? "passed" : "failed");
   return succeed ? 0 : 1;

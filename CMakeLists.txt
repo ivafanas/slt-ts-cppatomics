@@ -55,10 +55,11 @@ function(add_slt_ts_exe TEST_NAME)
 		COMMAND ./${TEST_NAME})
 endfunction()
 
-add_slt_ts_exe(memory_order_seq_cst)
+add_slt_ts_exe(memory_order_acq_rel_consumer_producer)
 add_slt_ts_exe(memory_order_relaxed_arr_max)
 add_slt_ts_exe(memory_order_relaxed_arr_sum)
 add_slt_ts_exe(memory_order_relaxed_inc_counter)
+add_slt_ts_exe(memory_order_seq_cst)
 
 # run-cmd is not actually generated, set it as symbolic
 set_source_files_properties(run-cmd PROPERTIES SYMBOLIC "true")

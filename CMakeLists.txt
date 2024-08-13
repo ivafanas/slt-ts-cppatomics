@@ -56,6 +56,7 @@ function(add_slt_ts_exe TEST_NAME)
 endfunction()
 
 add_slt_ts_exe(memory_order_acq_rel_consumer_producer)
+add_slt_ts_exe(memory_order_acq_rel_release_sequence)
 add_slt_ts_exe(memory_order_relaxed_arr_max)
 add_slt_ts_exe(memory_order_relaxed_arr_sum)
 add_slt_ts_exe(memory_order_relaxed_inc_counter)
